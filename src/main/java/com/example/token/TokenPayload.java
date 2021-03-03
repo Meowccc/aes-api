@@ -25,14 +25,14 @@ public class TokenPayload {
     private long timeStamp;
 
     public boolean isValid(long limit){
-        return (new Date().getTime()/1000 - timeStamp) > limit;
+        return (new Date().getTime()/1000 - timeStamp) < limit;
     }
 
 
 
-    public static String toJson(String company, long timeStamp) throws JsonProcessingException {
+    public static String toJson(String company) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.writeValueAsString(new TokenPayload(company,timeStamp));
+        return objectMapper.writeValueAsString(new TokenPayload(company,new Date().getTime()/1000));
     }
 
     public static TokenPayload parseJson(String json) throws JsonProcessingException {

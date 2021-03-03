@@ -35,8 +35,8 @@ public class PDFController {
 //        List<byte[]> Ret = customRepository.getObjectList("SELECT Contents FROM [Resources] WHERE [Type]='pdf' AND [FileName] = ? ", fileName);
 //        if(Ret.size() > 0) return new ResponseEntity<byte[]>(Ret.get(0), headers, HttpStatus.OK);
 
-        return new ResponseEntity<>(("File is not found.\n" + fileName).getBytes("UTF-8"), headers,
-                HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>("暫時都給過".getBytes("UTF-8"), headers,
+                HttpStatus.OK);
     }
 
 

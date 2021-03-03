@@ -36,7 +36,7 @@ class SecurityHelperTest {
 
     @Test
     void runFlow() throws JsonProcessingException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, UnsupportedEncodingException, InvalidKeyException {
-        String json = TokenPayload.toJson("80329815",1614742487);
+        String json = TokenPayload.toJson("80329815");
         String key = "m69p*H0!*Xyz#Lg8";
 
 
