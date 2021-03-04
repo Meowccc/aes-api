@@ -25,7 +25,7 @@ public class HeaderFilter extends OncePerRequestFilter {
     @Autowired
     SecurityHelper securityHelper;
 
-    @Value("${token.limit}")
+    @Value("${token.expireTime}")
     private long limit;
 
     @Override
