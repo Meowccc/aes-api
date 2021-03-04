@@ -1,5 +1,8 @@
 package com.example.controller;
 
+import com.example.rest.entity.Resources;
+import com.example.rest.repo.ResourcesRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,6 +14,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author
@@ -19,24 +23,26 @@ import java.util.Map;
 @RestController
 public class PDFController {
 
+    @Autowired
+    private ResourcesRepo resourcesRepo;
+
+    @GetMapping("test")
+    public String test(){
+        return "testtest";
+    }
 
     // TODO 之後要刪除
     @PostMapping(value = "/PdfService/pdf/file/download")
     public ResponseEntity<byte[]> get(HttpServletRequest req, @RequestBody Map<String, Object> pdfObj)
-            throws IOException {
+            throws Exception {
 
         String fileName = (String) pdfObj.get("fileName");
         int fileCount = (int) pdfObj.get("fileCount");
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
         headers.add("Content-disposition", getFileName(fileName, "pdf"));
-
-//        List<byte[]> Ret = customRepository.getObjectList("SELECT Contents FROM [Resources] WHERE [Type]='pdf' AND [FileName] = ? ", fileName);
-//        if(Ret.size() > 0) return new ResponseEntity<byte[]>(Ret.get(0), headers, HttpStatus.OK);
-
-        return new ResponseEntity<>(("File is not found.\n" + fileName).getBytes("UTF-8"), headers,
-                HttpStatus.INTERNAL_SERVER_ERROR);
+        Resources resources = resourcesRepo.findTopByFileName(fileName).orElseThrow(() -> new Exception("找不到該檔案"));
+        return new ResponseEntity<>(resources.getContents(), headers, HttpStatus.OK);
     }
 
 

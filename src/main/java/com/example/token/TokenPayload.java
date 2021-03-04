@@ -25,7 +25,7 @@ public class TokenPayload {
     private long timeStamp;
 
     public boolean isValid(long limit){
-        return (new Date().getTime()/1000 - timeStamp) > limit;
+        return (new Date().getTime()/1000 - timeStamp) < limit;
     }
 
 
