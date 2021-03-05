@@ -3,7 +3,10 @@ package com.example.controller;
 import com.example.rest.entity.Resources;
 import com.example.rest.repo.ResourcesRepo;
 import com.example.token.SecurityHelper;
+import com.example.token.TokenPayload;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,6 +26,9 @@ import java.util.Optional;
  **/
 @RestController
 public class PDFController {
+
+    @Value("${aes.company}")
+    private String company;
 
     @Autowired
     private ResourcesRepo resourcesRepo;
@@ -55,6 +61,11 @@ public class PDFController {
         String fileName = (String) pdfObj.get("fileName");
         return new ResponseEntity<>("",
                 HttpStatus.OK);
+    }
+
+    @GetMapping("aes/token")
+    public String getCipherText() throws JsonProcessingException {
+        return "Bearer " + securityHelper.encrypt(TokenPayload.toJson(company));
     }
 
 
