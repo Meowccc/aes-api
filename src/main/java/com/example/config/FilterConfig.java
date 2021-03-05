@@ -1,5 +1,6 @@
 package com.example.config;
 
+import com.example.filter.ErrorFilter;
 import com.example.filter.HeaderFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -14,14 +15,29 @@ import org.springframework.context.annotation.Configuration;
 public class FilterConfig {
 
     @Autowired
-    HeaderFilter headerFilter;
+    private HeaderFilter headerFilter;
+
+    @Autowired
+    private ErrorFilter errorFilter;
 
     @Bean
-    public FilterRegistrationBean<HeaderFilter> requestHeaderFilter(){
+    public FilterRegistrationBean<ErrorFilter> registerErrorFilter(){
+        FilterRegistrationBean<ErrorFilter> bean = new FilterRegistrationBean<>();
+        bean.setFilter(errorFilter);
+        bean.addUrlPatterns("/test","/PdfService/*");
+        bean.setName("errorFilter");
+        bean.setOrder(1);
+        return bean;
+    }
+
+    @Bean
+    public FilterRegistrationBean<HeaderFilter> registerHeaderFilter(){
         FilterRegistrationBean<HeaderFilter>bean = new FilterRegistrationBean<>();
         bean.setFilter(headerFilter);
-        bean.addUrlPatterns("/*");
+        bean.addUrlPatterns("/test","/PdfService/*");
         bean.setName("headerFilter");
         return bean;
     }
+
+
 }

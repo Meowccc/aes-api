@@ -16,30 +16,33 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ServerConfig {
 
+    @Value("${http.port}")
+    private Integer httpPort;
     @Value("${server.port}")
     private Integer port;
 
+
     @Bean
-    public TomcatServletWebServerFactory servletWebServerFactory(){
-        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory(){
-            protected void postProcessContext(Context context){
-                SecurityConstraint securityConstraint = new SecurityConstraint();
+    public TomcatServletWebServerFactory tomcatServletWebServerFactory(){
+        TomcatServletWebServerFactory tomcat=new TomcatServletWebServerFactory(){
+            @Override
+            protected void postProcessContext(Context context) {
+                SecurityConstraint securityConstraint=new SecurityConstraint();
                 securityConstraint.setUserConstraint("CONFIDENTIAL");
-                SecurityCollection collection = new SecurityCollection();
+                SecurityCollection collection=new SecurityCollection();
                 collection.addPattern("/*");
                 securityConstraint.addCollection(collection);
                 context.addConstraint(securityConstraint);
             }
         };
-
-        tomcat.addAdditionalTomcatConnectors(initiateHttpConnector());
+        tomcat.addAdditionalTomcatConnectors(connector());
         return tomcat;
     }
 
-    private Connector initiateHttpConnector(){
+    private Connector connector(){
         Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
         connector.setScheme("http");
-        connector.setPort(port);
+        connector.setPort(httpPort);
         connector.setSecure(false);
         connector.setRedirectPort(port);
 

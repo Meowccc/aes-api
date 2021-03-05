@@ -1,5 +1,7 @@
 package com.example.filter;
 
+import com.example.exception.NotAuthorizedException;
+import com.example.exception.TimeoutException;
 import com.example.token.SecurityHelper;
 import com.example.token.TokenPayload;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,23 +34,24 @@ public class HeaderFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         long startTime = System.currentTimeMillis();
 
-        try{
-//            String encrypted = request.getHeader("Authorization").substring(7);
-            String encrypted = Optional.ofNullable(request.getHeader("Authorization")).orElseThrow(() -> new Exception(" no token ")).substring(7);
-            String decrypted = securityHelper.decrypt(encrypted);
+        String encrypted = Optional.ofNullable(request.getHeader("Authorization")).orElseThrow(() -> new NotAuthorizedException(" no token ")).substring(7);
+        String decrypted = securityHelper.decrypt(encrypted);
 
-            TokenPayload tokenPayload = TokenPayload.parseJson(decrypted);
-
-            if(!tokenPayload.isValid(limit)){
-                response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-                response.getOutputStream().print("時效超過");
-            }
-
-
-        } catch (Exception e){
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.getOutputStream().print("請求錯誤");
-        }
+        TokenPayload tokenPayload = TokenPayload.parseJson(decrypted);
+        if (!tokenPayload.isValid(limit)) throw new TimeoutException();
+//        try {
+////            String encrypted = request.getHeader("Authorization").substring(7);
+//            String encrypted = Optional.ofNullable(request.getHeader("Authorization")).orElseThrow(() -> new NotAuthorizedException(" no token ")).substring(7);
+//            String decrypted = securityHelper.decrypt(encrypted);
+//
+//            TokenPayload tokenPayload = TokenPayload.parseJson(decrypted);
+//            if (!tokenPayload.isValid(limit)) throw new TimeoutException();
+//
+//        } catch (Exception e) {
+//            // 將 filter 的 exception 拋到 controller 處理
+//            request.setAttribute("filter.error", e);
+//            request.getRequestDispatcher("/error/throw").forward(request, response);
+//        }
 
         chain.doFilter(request, response);
         long processTime = System.currentTimeMillis() - startTime;

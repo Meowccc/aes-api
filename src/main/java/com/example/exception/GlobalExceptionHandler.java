@@ -15,6 +15,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleException(Exception e){
-        return e.getMessage();
+        return "Server Error";
+    }
+
+
+    @ExceptionHandler(NotAuthorizedException.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    public String handleException(NotAuthorizedException e){
+        return "請求未授權";
+    }
+    @ExceptionHandler(TimeoutException.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    public String handleException(TimeoutException e){
+        return "時效超過";
     }
 }
