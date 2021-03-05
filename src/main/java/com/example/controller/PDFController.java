@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.rest.entity.Resources;
 import com.example.rest.repo.ResourcesRepo;
+import com.example.token.SecurityHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,9 @@ public class PDFController {
         return "testtest";
     }
 
+    @Autowired
+    private SecurityHelper securityHelper;
+
     // TODO 之後要刪除
     @PostMapping(value = "/PdfService/pdf/file/download")
     public ResponseEntity<byte[]> get(HttpServletRequest req, @RequestBody Map<String, Object> pdfObj)
@@ -51,6 +55,16 @@ public class PDFController {
         String fileName = (String) pdfObj.get("fileName");
         return new ResponseEntity<>("",
                 HttpStatus.OK);
+    }
+
+
+    @GetMapping("aes/encrypt/{plainText}")
+    public String encrypt(@PathVariable String plainText){
+        return securityHelper.encrypt(plainText);
+    }
+    @GetMapping("aes/decrypt/{cipherText}")
+    public String decrypt(@PathVariable String cipherText){
+        return securityHelper.decrypt(cipherText);
     }
 
 
