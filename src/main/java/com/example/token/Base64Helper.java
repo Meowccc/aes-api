@@ -14,5 +14,8 @@ public class Base64Helper {
     public static byte[] decode(byte[] str){
         return Base64.getDecoder().decode(str);
     }
+    public static byte[] decode(String str){
+        return Base64.getDecoder().decode(str);
+    }
 }
 
